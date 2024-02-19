@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "BinaryTreeDSMain",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.BinaryTreeDSMain",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
             "name": "QueueDS",
             "request": "launch",
             "mainClass": "org.myproject.concatenate.QueueDS",
