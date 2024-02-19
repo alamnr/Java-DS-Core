@@ -1,0 +1,126 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "QueueDS",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.QueueDS",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
+            "name": "StackDS",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.StackDS",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
+            "name": "LinkListDSDemo",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.LinkListDSDemo",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
+            "name": "AnnotationExample",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.AnnotationExample",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
+            "name": "OptionalTest",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.OptionalTest",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
+            "name": "GenericTest",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.GenericTest",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
+            "name": "CollectionExample",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.CollectionExample",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
+            "name": "PatternMatching",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.PatternMatching",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
+            "name": "EnumType",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.EnumType",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
+            "name": "LamdaTest",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.LamdaTest",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
+            "name": "BoxDemo",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.BoxDemo",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
+            "name": "Sample",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.Sample",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
+            "name": "MyPair",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.MyPair",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
+            "name": "Box",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.Box",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
+            "name": "Generics",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.Generics",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Concatenate",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.Concatenate",
+            "projectName": "java"
+        }
+    ]
+}

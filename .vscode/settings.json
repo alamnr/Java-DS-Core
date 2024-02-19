@@ -1,0 +1,5 @@
+{
+    "java.dependency.packagePresentation": "flat",
+    "jdk.runConfig.arguments": "\"31,20,15,17\"  \"20,19,17,35\"",
+    "java.configuration.updateBuildConfiguration": "interactive"
+}
