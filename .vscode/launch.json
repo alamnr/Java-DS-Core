@@ -6,6 +6,34 @@
     "configurations": [
         {
             "type": "java",
+            "name": "QueueInCLF",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.QueueInCLF",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
+            "name": "RangeRecord",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.RangeRecord",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
+            "name": "RangeClass",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.RangeClass",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
+            "name": "HelloRunnable",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.HelloRunnable",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
             "name": "BinaryTreeDSMain",
             "request": "launch",
             "mainClass": "org.myproject.concatenate.BinaryTreeDSMain",
