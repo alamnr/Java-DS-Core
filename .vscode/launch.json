@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "MapClf",
+            "request": "launch",
+            "mainClass": "org.myproject.concatenate.MapClf",
+            "projectName": "java"
+        },
+        {
+            "type": "java",
             "name": "QueueInCLF",
             "request": "launch",
             "mainClass": "org.myproject.concatenate.QueueInCLF",
