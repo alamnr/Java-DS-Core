@@ -1,15 +1,25 @@
 package org.myproject.concatenate;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
+import java.util.Random;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -17,7 +27,7 @@ import java.util.stream.Stream;
 
 public class MapClf {
 
-    public static void main(String ... args){
+    public static void main(String ... args) throws IOException, InterruptedException{
         Map<Integer, String> map = Map.of(1,"one",2,"two",3,"three",4,"four",5,"five",6,"six",7,"seven",8,"eight",9,"nine",10,"ten");
 
         System.out.println(map);
@@ -192,5 +202,130 @@ public class MapClf {
                         //.peek(s -> System.out.println("Mapped = " + s))
                         .collect(Collectors.toList());
         System.out.println("result = " + result);
+
+
+        Stream<String> empty = Stream.empty();
+        List<String> emptyList = empty.collect(Collectors.toList());
+        System.out.println("Empty List : " + emptyList);
+
+        Stream<Integer> intStream = Stream.of(1,2,3,4);
+        List<Integer> intList = intStream.collect(Collectors.toList()) ;
+        System.out.println("intList - "+ intList );
+        String[] stringArray = {"one","two","three"};
+        Stream<String> stringStream = Arrays.stream(stringArray);
+        List<String> stringList = stringStream.collect(Collectors.toList());
+        System.out.println("stringList - " + stringList);
+
+        Stream<String> generated  = Stream.generate(() -> "+");
+        List<String> list = generated.limit(10L).collect(Collectors.toList());
+        System.out.println("list - "+ list);
+               
+        Stream<String> iterated = Stream.iterate("+", s -> s + "+");
+        iterated.limit(5L).forEach(System.out::println);
+
+        iterated = Stream.iterate("+",s->s.length()<=5, s-> s+"+");
+        iterated.limit(5L).forEach(System.out::println);
+
+        Random random = new Random(314L);
+        List<Integer> randomInts = 
+            random.ints(10, 1, 50)
+          .boxed()
+          .collect(Collectors.toList());
+        System.out.println("randomInts = " + randomInts);
+
+        //random = new Random(314L);
+        List<Boolean> booleans =
+            random.doubles(1_000, 0d, 1d)
+                .mapToObj(rand -> rand <= 0.8) // you can tune the probability here
+                .collect(Collectors.toList());
+
+        // Let us count the number of true in this list
+        long numberOfTrue =
+            booleans.stream()
+                    .filter(b -> b)
+                    .count();
+        System.out.println("numberOfTrue = " + numberOfTrue);
+
+        List<String> letters =
+    random.doubles(1_000, 0d, 1d)
+          .mapToObj(rand ->
+                    rand < 0.5 ? "A" : // 50% of A
+                    rand < 0.8 ? "B" : // 30% of B
+                    rand < 0.9 ? "C" : // 10% of C
+                                 "D")  // 10% of D
+          .collect(Collectors.toList());
+
+    Map<String, Long> mapStream =
+        letters.stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+                mapStream.forEach((letter, number) -> System.out.println(letter + " :: " + number));
+
+                String sentence = "Hello Duke";
+        List<String> letters1 =   sentence.chars()
+                    .mapToObj(codePoint -> (char)codePoint)
+                    .map(Object::toString)
+                    .collect(Collectors.toList());
+        System.out.println("letters = " + letters1);
+        letters1 =   sentence.chars()
+            .mapToObj(Character::toString)
+            .collect(Collectors.toList());
+    System.out.println("letters1 = " + letters1);
+
+    Path log = Path.of("/tmp/debug.log"); // adjust to fit your installation
+        try (Stream<String> lines = Files.lines(log)) {
+            
+            long warnings = 
+                lines.filter(line -> line.contains("WARNING"))
+                    .count();
+            System.out.println("Number of warnings = " + warnings);
+            
+        } catch (IOException e) {
+            // do something with the exception
+        }
+        sentence = "For there is good news yet to hear and fine things to be seen";
+
+        String[] elements = sentence.split(" ");
+        Stream<String> stream = Arrays.stream(elements);
+        System.out.println(stream.collect(Collectors.toList()));
+
+            sentence = "For there is good news yet to hear and fine things to be seen";
+
+        Pattern pattern = Pattern.compile(" ");
+        Stream<String> stream1 = pattern.splitAsStream(sentence);
+        List<String> words = stream1.collect(Collectors.toList());
+
+        System.out.println("words = " + words);
+
+        Stream.Builder<String> builder = Stream.<String>builder();
+
+            builder.add("one")
+                .add("two")
+                .add("three")
+                .add("four");
+
+            Stream<String> stream2 = builder.build();
+
+            List<String> list12 = stream2.collect(Collectors.toList());
+            System.out.println("list12 = " + list12);
+
+            // The URI of the file
+        URI uri = URI.create("https://www.gutenberg.org/files/98/98-0.txt");
+
+        // The code to open create an HTTP request
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder(uri).build();
+
+
+        // The sending of the request
+        HttpResponse<Stream<String>> response = client.send(request, HttpResponse.BodyHandlers.ofLines());
+        List<String> lines;
+        try (Stream<String> stream34 = response.body()) {
+            lines = stream34
+                .dropWhile(line -> !line.equals("A TALE OF TWO CITIES"))
+                .takeWhile(line -> !line.equals("*** END OF THE PROJECT GUTENBERG EBOOK A TALE OF TWO CITIES ***"))
+                .collect(Collectors.toList());
+        }
+        System.out.println("# lines = " + lines.size());
     }    
 }
