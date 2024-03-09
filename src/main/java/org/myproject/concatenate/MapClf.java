@@ -9,16 +9,25 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.IntSummaryStatistics;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
+import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -27,7 +36,7 @@ import java.util.stream.Stream;
 
 public class MapClf {
 
-    public static void main(String ... args) throws IOException, InterruptedException{
+    public static void main(String ... args) {
         Map<Integer, String> map = Map.of(1,"one",2,"two",3,"three",4,"four",5,"five",6,"six",7,"seven",8,"eight",9,"nine",10,"ten");
 
         System.out.println(map);
@@ -309,6 +318,7 @@ public class MapClf {
             List<String> list12 = stream2.collect(Collectors.toList());
             System.out.println("list12 = " + list12);
 
+        /*
             // The URI of the file
         URI uri = URI.create("https://www.gutenberg.org/files/98/98-0.txt");
 
@@ -318,14 +328,242 @@ public class MapClf {
 
 
         // The sending of the request
-        HttpResponse<Stream<String>> response = client.send(request, HttpResponse.BodyHandlers.ofLines());
-        List<String> lines;
-        try (Stream<String> stream34 = response.body()) {
-            lines = stream34
-                .dropWhile(line -> !line.equals("A TALE OF TWO CITIES"))
-                .takeWhile(line -> !line.equals("*** END OF THE PROJECT GUTENBERG EBOOK A TALE OF TWO CITIES ***"))
-                .collect(Collectors.toList());
+        HttpResponse<Stream<String>> response = null;
+        
+        try{
+            response = client.send(request, HttpResponse.BodyHandlers.ofLines());
+        } catch(Exception e){
+           // e.printStackTrace();
         }
-        System.out.println("# lines = " + lines.size());
+        List<String> lines = null;
+        if(response!=null){
+            try (Stream<String> stream34 = response.body()) {
+                lines = stream34
+                    .dropWhile(line -> !line.equals("A TALE OF TWO CITIES"))
+                    .takeWhile(line -> !line.equals("*** END OF THE PROJECT GUTENBERG EBOOK A TALE OF TWO CITIES ***"))
+                    .collect(Collectors.toList());
+            } 
+            System.out.println("# lines = " + lines.size());
+        }
+        */
+        
+
+        /////////////////////////////////////////// Reducing Stream ////////////////////////////
+
+        List<Integer> intsr = List.of(1,2,3,4,5);
+        int result1 = intsr.get(0);
+        BinaryOperator<Integer> binaryOperator = (a,b) -> a+b;
+        for(var i=1;i<intsr.size();i++){
+            //result1+=intsr.get(i);
+            result1 = binaryOperator.apply(result1, intsr.get(i));
+        }
+        System.out.println("sum - "+result1);;
+        result1 = intsr.get(0);
+        binaryOperator = (a,b) -> a>b?a:b;
+        for(var i=1;i<intsr.size();i++){
+            //result1+=intsr.get(i);
+            result1 = binaryOperator.apply(result1, intsr.get(i));
+        }
+        System.out.println("max - "+result1);;
+
+        binaryOperator = (a,b) -> a+b;
+        int result11 = reduce(intsr.subList(0,2),binaryOperator);
+        int result22  = reduce(intsr.subList(2, 4),binaryOperator);
+        int result33 = binaryOperator.apply(result11,result22);
+        System.out.println("Sum = "+result33);
+
+        intList = List.of(3,6,2,1);
+        int identity = 0;
+        result11 = identity;
+        for (int elem : intList) {
+            result11 = binaryOperator.apply(result11, elem);
+        }
+        System.out.println("Sum - "+result11);
+
+
+        ints = Stream.of(2, 8, 1, 5, 3);
+        //Optional<Integer> optional = ints.reduce((i1, i2) -> i1 > i2 ? i1: i2);
+        Optional<Integer> optional = ints.reduce((i1, i2) -> i1+i2);
+
+        if (optional.isPresent()) {
+            System.out.println("result = " + optional.orElseThrow());
+        } else {
+            System.out.println("No result could be computed");
+        }
+        Stream<String> strStream = Stream.of("one","two","three","four","five");
+        Function<String, Integer> mapper = String::length;
+        BinaryOperator<Integer> combiner = (l1,l2) -> l1+l2;
+        //BiFunction<Integer,String,Integer> accumulator = (partialReduction,elem) -> partialReduction + elem.length();
+        BiFunction<Integer,String,Integer> accumulator = (partialReduction,elem) -> partialReduction + mapper.apply(elem);
+        int result55 = strStream.reduce(0,accumulator,combiner);
+        System.out.println(" sum = "+result55);
+
+        ////////////////////  Adding a Terminal Operation on a Stream  //////////////////////
+        Collection<String> stringsTerminal = List.of("one","two","three","four","five","six","seven");
+        long count = stringsTerminal.stream().filter(s->s.length()>3).count();
+        System.out.println(" count - "+ count);
+        
+        stringsTerminal.stream().filter(s->s.length()==3).map(String::toUpperCase).forEach(System.out::println);
+        List<String> result66 = new ArrayList<>();
+        stringsTerminal.stream().filter(s-> s.length()==3).map(String::toUpperCase).forEach(result66::add);
+        System.out.println("result66 = "+result66);
+
+        result66 = stringsTerminal.stream().filter(s->s.length()==4).map(String::toUpperCase).collect(Collectors.toList());
+        System.out.println("result66 = "+result66);
+
+        
+        result66 = stringsTerminal.stream().filter(s->s.length()==5).map(String::toUpperCase).toList();
+        System.out.println("result66 = "+result66);
+
+        List<String> result77 = stringsTerminal.stream().filter(s->s.length()==3).map(String::toUpperCase).collect(Collectors.toCollection(LinkedList::new));
+        System.out.println("linked list - "+ result77);
+
+        Set<String> result88 = stringsTerminal.stream().filter(s->s.length()==3).map(String::toUpperCase).collect(Collectors.toSet());
+        System.out.println(" Set of string: "+ result88);
+
+        String[] result99 = stringsTerminal.stream().filter(s->s.length()==3).map(String::toUpperCase).toArray(String[]::new);
+        System.out.println("string array - " + Arrays.toString(result99));
+
+        String longest = stringsTerminal.stream().max(Comparator.comparing(String::length)).orElseThrow();
+        System.out.println("longest = "+longest);
+
+        String findFirst = stringsTerminal.stream().filter(s->s.length()==3).findFirst().orElseThrow();
+        System.out.println(" Find first : " + findFirst);
+
+        System.out.println(stringsTerminal.stream().filter(s->s.length()==3).findFirst().isPresent());
+
+        boolean noBlank  = stringsTerminal.stream().allMatch(Predicate.not(String::isBlank));
+        boolean oneGT3   = stringsTerminal.stream().anyMatch(s -> s.length() == 3);
+        boolean allLT10  = stringsTerminal.stream().noneMatch(s -> s.length() > 10);
+                
+        System.out.println("noBlank = " + noBlank);
+        System.out.println("oneGT3  = " + oneGT3);
+        System.out.println("allLT10 = " + allLT10);
+
+        Collection<String> stringCollection = List.of("one","two","three","four","five","six","seven","eight","nine");
+        Stream<String> stringsSorted = stringCollection.stream().sorted();
+        //stringsSorted.forEach(System.out::println);
+        Stream<String> filteredString = stringsSorted.filter(s->s.length()>1);
+        //filteredString.forEach(System.out::println);
+        Stream<Integer> lengths = filteredString.map(String::length);
+        lengths.forEach(System.out::println);
+
+        stringCollection = List.of("one", "two", "two", "three", "four", "five");
+
+        Stream<String> stringsDistinc = stringCollection.stream().distinct();
+        filteredString = stringsDistinc.filter(s -> s.length() < 5);
+        lengths = filteredString.map(String::length);
+
+        List<Integer>  numbers = IntStream.range(0,10).boxed().collect(Collectors.toList());
+        System.out.println(" numbers - "+ numbers);
+
+        Set<Integer> distinctNumbers = IntStream.range(0,10).map(s->s/2).boxed().collect(Collectors.toSet());
+        System.out.println("Even number - " +distinctNumbers);
+
+        LinkedList<Integer> linkedList = IntStream.range(0,10).boxed().collect(Collectors.toCollection(LinkedList::new));
+        System.out.println("LinkedList - " + linkedList);
+
+        Collection<String> stringCollection1 = List.of("one","two","three");
+        long count1 = stringCollection1.stream().count();
+        long countingCollector =  stringCollection1.stream().collect(Collectors.counting());
+        System.out.println("count - " + count1);
+        System.out.println("collector counting - "+ countingCollector);
+
+        String joined = IntStream.range(0,10).boxed().map(Object::toString).collect(Collectors.joining());
+        System.out.println("joined - "+ joined);
+
+        joined = IntStream.range(0,15).boxed().map(Object::toString).collect(Collectors.joining(",","{","}"));
+        System.out.println("joined - " + joined);
+
+        strings =  List.of("one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+                    "ten", "eleven", "twelve");
+
+        Map<Boolean,List<String>> map1 = strings.stream().collect(Collectors.partitioningBy(s->s.length()>4));
+        map1.forEach((k,v)-> System.out.println(k+ "  ::  "+v));
+
+        Map<Integer,List<String>> map2 = strings.stream().collect(Collectors.groupingBy(String::length));
+        map2.forEach((k,v)->System.out.println(k+" :: "+v));
+
+        Map<Integer,Long>  map3 = strings.stream().collect(Collectors.groupingBy(String::length, Collectors.counting()));
+        map3.forEach((k,v)->System.out.println(k+" :: "+v));
+
+        Map<Integer,String> map4 = strings.stream().collect(Collectors.groupingBy(String::length, Collectors.joining(", ")));
+        map4.forEach((k,v)->System.out.println(k+" :: "+v));
+
+
+        Map<Integer, String> map5 =  strings.stream().collect(
+                                    Collectors.toMap(
+                                            element -> element.length(),
+                                            element -> element, 
+                                            (element1, element2) -> element1 + ", " + element2));
+
+        map5.forEach((key, value) -> System.out.println(key + " :: " + value));
+
+        Map<Integer,Long> histogram = strings.stream().collect(Collectors.groupingBy(String::length, Collectors.counting()));
+        histogram.forEach((k,v)-> System.out.println(k +" :: "+v));
+
+        Map.Entry<Integer,Long> maxValue = histogram.entrySet().stream().max(Map.Entry.comparingByValue())
+                                                    .orElseThrow();
+        System.out.println("Maxvalue - "+ maxValue);
+
+        record  NumberOfLength(int length, long number ){
+            static NumberOfLength fromEntry(Map.Entry<Integer, Long> entry) {
+                return new NumberOfLength(entry.getKey(), entry.getValue());
+            }
+        
+            static Comparator<NumberOfLength> comparingByLength() {
+                return Comparator.comparing(NumberOfLength::length);
+            }
+        }
+
+        NumberOfLength maxNumberOfLength =
+        histogram.entrySet().stream()
+             .map(NumberOfLength::fromEntry)
+             .max(NumberOfLength.comparingByLength())
+             .orElseThrow();
+
+        System.out.println("maxNumberOfLength = " + maxNumberOfLength);
+
+        List<String> result19 = strings.stream().collect(Collectors.mapping(String::toUpperCase, Collectors.toList()));
+
+        System.out.println("result = " + result19);
+
+        var map33 = histogram.entrySet().stream()
+                        .map(NumberOfLength::fromEntry)
+                        .collect(
+                            Collectors.groupingBy(NumberOfLength::number));
+
+
+        map33.forEach((k,v)->System.out.println(k+"   ::  "+v));
+
+        var map34 = histogram.entrySet().stream()
+                .map(NumberOfLength::fromEntry)
+                .collect(Collectors.groupingBy(
+                NumberOfLength::number, 
+                Collectors.mapping(NumberOfLength::length, Collectors.toList())));
+        
+        map34.forEach((k,v)->System.out.println(k+"   ::  "+v));
+
+        Map<Long, List<Integer>> map35 = histogram.entrySet().stream()
+                                    .map(NumberOfLength::fromEntry)
+                                    .collect(
+                                        Collectors.groupingBy(
+                                            NumberOfLength::number,
+                                            Collectors.mapping(NumberOfLength::length, Collectors.toList())));
+
+        Map.Entry<Long, List<Integer>> result89 = map35.entrySet().stream()
+                                                    .max(Map.Entry.comparingByKey())
+                                                    .orElseThrow();
+
+        System.out.println("result = " + result89);
     }    
+
+    static int reduce(List<Integer> ints, BinaryOperator<Integer> sum)
+    {
+        int result = ints.get(0);
+        for(var i=1; i<ints.size();i++){
+            result = sum.apply(result,ints.get(i));
+        }
+        return result;
+    }
 }
